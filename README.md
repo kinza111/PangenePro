@@ -1,6 +1,6 @@
 PangenePro is a pipeline designed for the quick and efficient identification of gene family members from multiple related genomes. It further classifies the identified members into core, accessory, and unique gene sets, collectively referred to as pangenes. 
 
-Features
+#Features
         Automation: It streamlines the previously hectic and error-prone genome-wide gene family identification steps, providing faster and more accurate identification. 
         Refinement of Initial Alignment Results: Provides the filtered results after the initial identification by removing the redundant accessions and the isoforms. 
         Domain Analysis: Analyzes the presence of specific domains to provide the confirmed and validated gene family members.
