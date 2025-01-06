@@ -43,4 +43,3 @@ Run the command to execute pipeline by setting query and subject files
 Example Run
 Replace the command in PangenePro.sh script with the example dataset and run it.
 $ python get_genes.py AtCRK_ref.faa Ahy_genome.fna Ahy_ proteome.faa Ahy_gff.gff Aip_genome.fna Aip_ proteome.faa Aip_gff.gff Adu_genome.fna Adu_ proteome.faa Adu_gff.gff
-
