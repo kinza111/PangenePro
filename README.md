@@ -3,11 +3,11 @@ PangenePro is a pipeline designed for the quick and efficient identification of 
 
 ## Features
 
-- **Automation:** It streamlines the previously hectic and error-prone genome-wide gene family identification steps, providing faster and more accurate identification. 
-        Refinement of Initial Alignment Results: Provides the filtered results after the initial identification by removing the redundant accessions and the isoforms. 
-        Domain Analysis: Analyzes the presence of specific domains to provide the confirmed and validated gene family members.
-        Pangenes level Identification: Identifies gene family members from multiple genomes simultaneously and covers the intraspecies diversity by covering the presence absence variations across multiple genomes, thereby, providing identified members being classified into core, accessory, and unique genes.
-        Results Summary and Graphs: Efficiently processes and analyzes data, and provides detailed summary and graphs for better visualization of results. 
+- **Automation:** It streamlines the previously hectic and error-prone genome-wide gene family identification steps, providing faster and more accurate identification.
+- **Refinement of Initial Alignment Results:** Provides the filtered results after the initial identification by removing the redundant accessions and the isoforms.
+- **Domain Analysis:** Analyzes the presence of specific domains to provide the confirmed and validated gene family members.
+- **Pangenes level Identification:** Identifies gene family members from multiple genomes simultaneously and covers the intraspecies diversity by covering the presence absence variations across multiple genomes, thereby, providing identified members being classified into core, accessory, and unique genes.
+- **Results Summary and Graphs:** Efficiently processes and analyzes data, and provides detailed summary and graphs for better visualization of results. 
 
 Installations
 Prerequisites
