@@ -39,29 +39,17 @@ $ make install
 # Add Diamond to your PATH
 $ export PATH=/path/to/installation/:$PATH
 ```
-
-
-
-$ wget 
-$ tar zxvf ncbi-blast-2.16.0+-x64-linux.tar.gz
-# Add Blast+ tools to your PATH
-$ export PATH=/path/to/blast+/bin:$PATH
-2.	Seqtk
-$ git clone https://github.com/lh3/seqtk.git
-$ cd seqtk; make
-3.	Diamond 
-$ wget http://github.com/bbuchfink/diamond/releases/download/v2.1.10/diamond-linux64.tar.gz
-$ tar xzf diamond-linux64.tar.gz
-# Add Blast+ tools to your PATH
-$ export PATH=/path/to/diamond/bin:$PATH
-4.	orthAgogue
-$ git clone git://github.com/lh3/seqtk.git
-$ cd seqtk
-$ make
-$ cp seqtk /usr/local/bin
-5.	MCL
+- [orthAgogue](https://github.com/samyeaman/orthagogue)
+```
+$ git clone git://github.com/lh3/orthAgogue.git
+$ cd orthAgogue; make
+```
+- [MCL](https://github.com/micans/mcl)
+```
 $ conda install bioconda::mcl
 $ apt-get install mcl
+```
+
 Usage 
 Running the Application
 Clone the repository:
