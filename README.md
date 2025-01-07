@@ -49,6 +49,16 @@ $ cd orthAgogue; make
 $ conda install bioconda::mcl
 $ apt-get install mcl
 ```
+# Usage
+## Running the Pipeline 
+Clone the repository:
+```sh
+git clone https://github.com/yourusername/PangenePro.git
+cd PangenePro
+```
+Install the dependencies 
+
+
 
 Usage 
 Running the Application
