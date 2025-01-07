@@ -12,9 +12,9 @@ PangenePro is a pipeline designed for the quick and efficient identification of 
 ## Installations
 
 ### Prerequisites 
-PangenePro supports Linux system due to the software dependencies and requires Python 3.8 or higher version. 
-1.	Blast+
-$ wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.16.0+-x64-linux.tar.gz
+- PangenePro supports Linux system due to the software dependencies and requires Python 3.8 or higher version. 
+- [Blast+] (https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.16.0+-x64-linux.tar.gz)
+$ wget 
 $ tar zxvf ncbi-blast-2.16.0+-x64-linux.tar.gz
 # Add Blast+ tools to your PATH
 $ export PATH=/path/to/blast+/bin:$PATH
