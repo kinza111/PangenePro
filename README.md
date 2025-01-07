@@ -53,22 +53,7 @@ $ apt-get install mcl
 ## Running the Pipeline 
 Clone the repository:
 ```sh
-git clone https://github.com/yourusername/PangenePro.git
-cd PangenePro
+$ git clone https://github.com/yourusername/PangenePro.git
+$ cd PangenePro/Example/
+$ $ python get_genes.py AtCRK_ref.faa Ahy_genome.fna Ahy_ proteome.faa Ahy_gff.gff Aip_genome.fna Aip_ proteome.faa Aip_gff.gff Adu_genome.fna Adu_ proteome.faa Adu_gff.gff
 ```
-Install the dependencies 
-
-
-
-Usage 
-Running the Application
-Clone the repository:
-git clone https://github.com/yourusername/PangenePro.git
-cd PangenePro
-Set up your environment and install dependencies. The query protein sequence, proteome, and genomes files must be in fasta format (.fasta, .faa, .fa) format. The subject genome must be assembled at chromosomal level. The annotation file must be in .gff, .gff3, or .gtf format. 
-Run the command to execute pipeline by setting query and subject files
-./PangenePro.sh
-
-Example Run
-Replace the command in PangenePro.sh script with the example dataset and run it.
-$ python get_genes.py AtCRK_ref.faa Ahy_genome.fna Ahy_ proteome.faa Ahy_gff.gff Aip_genome.fna Aip_ proteome.faa Aip_gff.gff Adu_genome.fna Adu_ proteome.faa Adu_gff.gff
