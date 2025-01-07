@@ -9,8 +9,9 @@ PangenePro is a pipeline designed for the quick and efficient identification of 
 - **Pangenes level Identification:** Identifies gene family members from multiple genomes simultaneously and covers the intraspecies diversity by covering the presence absence variations across multiple genomes, thereby, providing identified members being classified into core, accessory, and unique genes.
 - **Results Summary and Graphs:** Efficiently processes and analyzes data, and provides detailed summary and graphs for better visualization of results. 
 
-Installations
-Prerequisites
+## Installations
+
+### Prerequisites 
 PangenePro supports Linux system due to the software dependencies and requires Python 3.8 or higher version. 
 1.	Blast+
 $ wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.16.0+-x64-linux.tar.gz
