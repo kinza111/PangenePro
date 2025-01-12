@@ -83,17 +83,14 @@ ctg123 . CDS             1201  1500  .  +  0  ID=cds00001;Parent=mRNA00001;Name=
 PangenePro first performs the alignment of queried sequences and the subject proteomes and generates two files: 'Nr_NIs_Accessions.txt' and 'Nr_NIs_PSeqs.faa' for each corresponding genome. These files contain the identified and filtered gene family members' accessions and their fasta sequences. The domain analysis step generates the .xml files which are further filtered to generate final gene family members files, 'protein_domains_all_x.txt' and 'protein_domains_all_x_filtered_proteins.txt'. In the final step, 'Pangenes.txt' file contains the Pangenes clusters and 'gene_sets_summary.csv' contains the classified sets.
 
 ## Running the Pipeline 
-A small dataset in the 'example' directory can be used to test the PangenePro pipeline. Access the dataset and replace the file names in the 'PangenePro.sh' file. 
+A small dataset in the 'example' directory can be used to test the PangenePro pipeline. Since it is a small part of original sequence files, the results would not have any biological meaning. Access the dataset and replace the file names in the 'PangenePro.sh' file. 
 ```
 #Specify the query protein sequence, proteome, genome, and anotation files
 python get_genes.py AtCRK_ref.faa Ahy_genome.fna Ahy_ proteome.faa Ahy_gff.gff Aip_genome.fna Aip_ proteome.faa Aip_gff.gff Adu_genome.fna Adu_ proteome.faa Adu_gff.gff
 
 $./PangenePro.sh
 ```
-
-
-
-
+The 
 
 ## Contributing
 We welcome contributions! Please fork the repository and submit pull requests for any enhancements or bug fixes.
