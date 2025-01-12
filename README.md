@@ -60,6 +60,7 @@ $ conda install bioconda::mcl
 $ apt-get install mcl
 ```
 ## Input and Output Files 
+### Input files 
 PangenePro requires the one protein fasta file containing the sequence of the gene family of interest and the one or more subject genome sequence, their corresponding protein sequence fasta and annotation files. 
 The genome and protein sequence file should be a fasta file with following format:
 ```
@@ -78,7 +79,7 @@ ctg123 . mRNA            1050  9000  .  +  .  ID=mRNA00001;Parent=gene00001;Name
 ctg123 . exon            1300  1500  .  +  .  ID=exon00001;Parent=mRNA00003
 ctg123 . CDS             1201  1500  .  +  0  ID=cds00001;Parent=mRNA00001;Name=edenprotein.1
 ```
-
+### Output files
 
 
 
