@@ -80,8 +80,7 @@ ctg123 . exon            1300  1500  .  +  .  ID=exon00001;Parent=mRNA00003
 ctg123 . CDS             1201  1500  .  +  0  ID=cds00001;Parent=mRNA00001;Name=edenprotein.1
 ```
 ### Output files
-
-
+PangenePro first performs the alignment of queried sequences and the subject proteomes and generates two files: 'Nr_NIs_Accessions.txt' and 'Nr_NIs_PSeqs.faa' for each corresponding genome. These files contain the identified and filtered gene family members' accessions and their fasta sequences. The domain analysis step generates the .xml files which are further filtered to generate final gene family members files, 'protein_domains_all_x.txt' and 'protein_domains_all_x_filtered_proteins.txt'. In the final step, 'Pangenes.txt' file contains the Pangenes clusters and 'gene_sets_summary.csv' contains the classified sets.
 
 ## Running the Pipeline 
 Clone the repository:
