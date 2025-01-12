@@ -11,9 +11,17 @@ PangenePro is a pipeline designed for the quick and efficient identification of 
 - **Pangenes level Identification:** Identifies gene family members from multiple genomes simultaneously and covers the intraspecies diversity by covering the presence absence variations across multiple genomes, thereby, providing identified members being classified into core, accessory, and unique genes.
 - **Results Summary and Graphs:** Efficiently processes and analyzes data, and provides detailed summary and graphs for better visualization of results. 
 
-## Installations
-
-### Prerequisites 
+## Download and Usage
+download the PangenePro using wget or through git and and uncompress the package. After downloading, put the bin directory into your PATH.
+```
+# download the PangenePro
+wget https://github.com/kinza111/PangenePro/archive/refs/heads/main.zip
+or
+git clone git@github.com:kinza111/PangenePro.git
+# Add the bin to PATH
+$ export PATH=/path/to/PangenePro/bin/:$PATH
+```
+### Dependencies
 - Linux system due to the software dependencies
 - Python 3.8 or higher version
 - [Blast+](https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.16.0+-x64-linux.tar.gz)
@@ -52,14 +60,13 @@ $ conda install bioconda::mcl
 $ apt-get install mcl
 ```
 # Usage
+After downloading the PangenePro repository and installing the dependencies  
 ## Running the Pipeline 
 Clone the repository:
-```sh
-$ git clone https://github.com/yourusername/PangenePro.git
-$ cd PangenePro/Example/
-$ $ python get_genes.py AtCRK_ref.faa Ahy_genome.fna Ahy_ proteome.faa Ahy_gff.gff Aip_genome.fna Aip_ proteome.faa Aip_gff.gff Adu_genome.fna Adu_ proteome.faa Adu_gff.gff
-```
-# Contributing
+
+
+
+## Contributing
 We welcome contributions! Please fork the repository and submit pull requests for any enhancements or bug fixes.
 
 ## Contact us
