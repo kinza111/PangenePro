@@ -89,8 +89,7 @@ A small dataset in the 'example' directory can be used to test the PangenePro pi
 python get_genes.py AtCRK_ref.faa Ahy_genome.fna Ahy_ proteome.faa Ahy_gff.gff Aip_genome.fna Aip_ proteome.faa Aip_gff.gff Adu_genome.fna Adu_ proteome.faa Adu_gff.gff
 
 $./PangenePro.sh
-```
-The 
+``` 
 
 ## Contributing
 We welcome contributions! Please fork the repository and submit pull requests for any enhancements or bug fixes.
