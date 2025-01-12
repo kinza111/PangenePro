@@ -59,8 +59,12 @@ $ git clone https://github.com/yourusername/PangenePro.git
 $ cd PangenePro/Example/
 $ $ python get_genes.py AtCRK_ref.faa Ahy_genome.fna Ahy_ proteome.faa Ahy_gff.gff Aip_genome.fna Aip_ proteome.faa Aip_gff.gff Adu_genome.fna Adu_ proteome.faa Adu_gff.gff
 ```
+# Contributing
+We welcome contributions! Please fork the repository and submit pull requests for any enhancements or bug fixes.
+
 ## Contact us
 - Kinza Fatima; kfati002@ucr.edu
 - Haifei Hu; huhaifei@gdaas.cn (E-mail can be in Chinese)
-- Muhammad Tahir ul Qamar; m.tahirulqamar@hotmail.com
+- Muhammad Tahir ul Qamar; tahirulqamar@gcuf.edu.pk
+We are dedicated to supporting our community and enhancing the project with your valuable feedback.
 
