@@ -59,8 +59,29 @@ $ cd orthAgogue; make
 $ conda install bioconda::mcl
 $ apt-get install mcl
 ```
-# Usage
-After downloading the PangenePro repository and installing the dependencies  
+## Input and Output Files 
+PangenePro requires the one protein fasta file containing the sequence of the gene family of interest and the one or more subject genome sequence, their corresponding protein sequence fasta and annotation files. 
+The genome and protein sequence file should be a fasta file with following format:
+```
+>chr1
+ATCGATCG...
+
+>ABC
+ACKLMN...
+```
+File extension shoud be, '.fa', '.faa', '.fasta'. The prefix name of the sequence files will be used to indicate the temporary files, so we recommend using the organism's or cultivar names as file name 'cultivar.fa (like Arachis.fa)' while running PangenePro.
+
+The annotattion file extension should be '.gff', '.gff3', or '.gtf'. 
+```
+ctg123 . gene            1000  9000  .  +  .  ID=gene00001;Name=EDEN
+ctg123 . mRNA            1050  9000  .  +  .  ID=mRNA00001;Parent=gene00001;Name=EDEN.1
+ctg123 . exon            1300  1500  .  +  .  ID=exon00001;Parent=mRNA00003
+ctg123 . CDS             1201  1500  .  +  0  ID=cds00001;Parent=mRNA00001;Name=edenprotein.1
+```
+
+
+
+
 ## Running the Pipeline 
 Clone the repository:
 
