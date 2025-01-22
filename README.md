@@ -1,4 +1,6 @@
 # PangenePro: an automated pipeline for rapid identification and classification of gene family members
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14661747.svg)](https://doi.org/10.5281/zenodo.14661747)
+
 PangenePro is a pipeline designed for the quick and efficient identification of gene family members from multiple related genomes. It further classifies the identified members into core, accessory, and unique gene sets, collectively referred to as pangenes. 
 
 ![PangenePro](https://github.com/kinza111/PangenePro/blob/main/PangenePro.png)
