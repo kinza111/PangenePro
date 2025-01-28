@@ -44,7 +44,7 @@ $ cd seqtk; make
 - [Diamond](https://github.com/bbuchfink/diamond)
 ```
 $ wget http://github.com/bbuchfink/diamond/releases/download/v2.1.10/diamond-linux64.tar.gz
-$ tarxzf diamond-linux64.tar.gz
+$ tar xzf diamond-linux64.tar.gz
 $ ./configure --prefix=/path/to/installation
 $ make
 $ make install
