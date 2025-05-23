@@ -1,50 +1,35 @@
 #!/bin/bash
 
-# Variables
+email="$1"
+base_dir="$2"
 waitevery=30
-seqs_dir="seqs"
-IPS_out_dir="IPS_out"
 
-# Create IPS_out directory if it doesn't exist
-mkdir -p "${IPS_out_dir}"
+if [ -z "$email" ] || [ -z "$base_dir" ]; then
+  echo "Usage: $0 <email> <seqs_directory>"
+  exit 1
+fi
 
-# Count the number of seqRefSet directories
-num_seq_ref_set=$(ls -d "${seqs_dir}"/seqRefSet* | wc -l)
+count=0
+for fa_file in "${base_dir}"/seqRefSet_*/**/*.fa "${base_dir}"/seqRefSet_*/*.fa; do
+  [ -f "$fa_file" ] || continue
 
-# Create output directories based on the number of seqRefSet directories
-for ((i=1; i<=$num_seq_ref_set; i++)); do
-    out_dir="${IPS_out_dir}/out${i}"
-    mkdir -p "${out_dir}"
+  xml_file="${fa_file%.fa}.xml"
+  if [ -f "$xml_file" ]; then
+    echo "Skipping already processed: $xml_file"
+    continue
+  fi
+
+  echo "Submitting: $fa_file"
+  python3 iprscan_client.py \
+    --sequence "$fa_file" \
+    --email "$email" &
+
+  ((count++))
+  if (( count % waitevery == 0 )); then
+    wait
+  fi
 done
-
-for seq_ref_set_dir in "${seqs_dir}"/*; do
-    if [ -d "$seq_ref_set_dir" ]; then
-        echo "Processing seqRefSet directory: $seq_ref_set_dir"
-        seq_ref_set_name=$(basename "${seq_ref_set_dir}")
-        out_dir="${IPS_out_dir}/out${seq_ref_set_name}"
-        
-        
-        for fa_file in "${seq_ref_set_dir}"/*.fa; do
-            if [ -f "$fa_file" ]; then
-                echo "Processing file: $fa_file"
-                genome_name=$(basename "${fa_file}" .fa)
-                
-                python3 iprscan5_urllib3.py \
-                    --goterms \
-                    --pathways \
-                    --email=kinzaamjad456@gmail.com \
-                    --outfile="${out_dir}/${genome_name}.xml" \
-                    --outformat=xml \
-                    "${fa_file}"
-                
-                
-                ((i++ % waitevery == 0)) && wait
-            fi
-        done
-    fi
-done
-
 
 wait
-
+echo "All jobs submitted."
 exit 0
