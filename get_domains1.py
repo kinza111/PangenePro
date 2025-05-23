@@ -1,50 +1,71 @@
+#!/usr/bin/env python3
+
 import os
+import argparse
 import xml.etree.ElementTree as ET
 
-# Directory containing all XML output files
-xml_parent_directory = '/PangenePro/IPS_out'
+# InterProScan XML uses this namespace
+IPR_NS = "https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/schemas"
 
-# Output directory for domain analysis results
-output_directory = 'DomAnals'
-os.makedirs(output_directory, exist_ok=True)
+def parse_xml_file(xml_file):
+    try:
+        tree = ET.parse(xml_file)
+        root = tree.getroot()
 
-# Open the output file for writing
-for subdir in os.listdir(xml_parent_directory):
-    if subdir.startswith('out'):
-        xml_directory = os.path.join(xml_parent_directory, subdir)
-        output_file_path = os.path.join(output_directory, f'protein_domains_all_{subdir[3:]}.txt')
-        
-        with open(output_file_path, 'w') as output_file:
-            # Write header
-            output_file.write('Protein ID\tInterPro Domains\tDescription\n')
+        protein_id = root.find(f".//{{{IPR_NS}}}xref").attrib['id']
+        domain_entries = []
 
-            # Iterate over all files in the XML directory
-            for filename in os.listdir(xml_directory):
-                # Check if file is XML
-                if filename.endswith('.xml'):
-                    xml_file = os.path.join(xml_directory, filename)
+        for entry in root.findall(f".//{{{IPR_NS}}}entry"):
+            if entry.attrib.get('type') == 'DOMAIN':
+                acc = entry.attrib.get('ac')
+                desc = entry.attrib.get('desc')
+                domain_entries.append((protein_id, acc, desc))
 
-                    # Parse the XML file
-                    tree = ET.parse(xml_file)
-                    root = tree.getroot()
+        return domain_entries
 
-                    # Iterate over protein elements
-                    for protein in root.findall('.//{https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/schemas}protein'):
-                        # Get protein ID
-                        protein_id = protein.find('.//{https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/schemas}xref').attrib['id']
+    except Exception as e:
+        print(f"Error parsing {xml_file}: {e}")
+        return []
 
-                        # Initialize lists to store domain information
-                        domain_accessions = []
-                        domain_descriptions = []
+def process_seqref_folder(folder_path, output_file):
+    xml_files = [f for f in os.listdir(folder_path) if f.endswith('.xml')]
+    total_proteins, total_domains = 0, 0
 
-                        # Get InterPro domains
-                        for entry in protein.findall('.//{https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/schemas}entry'):
-                            if entry.attrib['type'] == 'DOMAIN':
-                                domain_accessions.append(entry.attrib['ac'])
-                                domain_descriptions.append(entry.attrib['desc'])
+    with open(output_file, 'w') as out:
+        out.write("Protein ID\tInterPro Domain\tDescription\n")
+        for xml in xml_files:
+            xml_path = os.path.join(folder_path, xml)
+            entries = parse_xml_file(xml_path)
+            if entries:
+                total_proteins += 1
+                total_domains += len(entries)
+                for entry in entries:
+                    out.write("\t".join(entry) + "\n")
 
-                        # Write protein ID, InterPro domains, and descriptions to the output file
-                        for accession, description in zip(domain_accessions, domain_descriptions):
-                            output_file.write(f"{protein_id}\t{accession}\t{description}\n")
+    print(f"Processed {folder_path}: {total_proteins} proteins, {total_domains} domains.")
 
-print("Extraction complete. Please check the 'DomAnals' directory for the results.")
+def main():
+    parser = argparse.ArgumentParser(description="Extract InterPro domain annotations from .xml files.")
+    parser.add_argument("--input_dir", required=True, help="Directory containing seqRefSet_*/ folders with .xml files")
+    parser.add_argument("--output_dir", default="domains", help="Directory to save domain output files (default: domains)")
+    args = parser.parse_args()
+
+    input_dir = os.path.abspath(args.input_dir)
+    output_dir = os.path.abspath(args.output_dir)
+    os.makedirs(output_dir, exist_ok=True)
+
+    refset_dirs = [d for d in os.listdir(input_dir) if d.startswith("seqRefSet_")]
+    if not refset_dirs:
+        print(f"No seqRefSet_* folders found in {input_dir}. Exiting.")
+        return
+
+    for folder in refset_dirs:
+        folder_path = os.path.join(input_dir, folder)
+        refset_num = folder.split("_")[-1]
+        output_file = os.path.join(output_dir, f"domains_RefSet_{refset_num}.tsv")
+        process_seqref_folder(folder_path, output_file)
+
+    print("Domain extraction complete.")
+
+if __name__ == "__main__":
+    main()
