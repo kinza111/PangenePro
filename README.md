@@ -25,7 +25,7 @@ $ export PATH=/path/to/PangenePro/bin/:$PATH
 ```
 ### Dependencies
 - Linux system due to the software dependencies
-- Python 3.8 or higher version
+- Python 3.8 or higher version and R. 
 - [Blast+](https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.16.0+-x64-linux.tar.gz)
 ```
 $ wget https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/ncbi-blast-2.16.0+-x64-linux.tar.gz
@@ -88,12 +88,11 @@ PangenePro first performs the alignment of queried sequences and the subject pro
 A small dataset in the 'example' directory can be used to test the PangenePro pipeline. Since it is a small part of original sequence files, the results would not have any biological meaning. Access the dataset and replace the file names in the 'PangenePro.sh' file. 
     
 ```
-#Specify the query protein sequence, proteome, genome, and anotation files
-python get_genes.py AtCRK_ref.faa Ahy_genome.fna Ahy_ proteome.faa Ahy_gff.gff Aip_genome.fna Aip_ proteome.faa Aip_gff.gff Adu_genome.fna Adu_ proteome.faa Adu_gff.gff
+#Specify the query protein sequence, proteome, genome, and anotation files in the 'PangenePro.sh' script and run the script. Make sure all files and directories are specified. 
 
 $./PangenePro.sh
 ```
-The genome, proteome, and annotation files for each genome should be specified in order. First specify the reference gene family member sequences. Then specify the genome, proteome, and anootation files for genome one, then genome two and so on.  
+The genome, proteome, and annotation files for each genome should be specified in order. First specify the reference gene family member sequences. Then specify the genome, proteome, and annotation files for genome one, then genome two and so on.  
 
 ## Contributing
 We welcome contributions! Please fork the repository and submit pull requests for any enhancements or bug fixes.
