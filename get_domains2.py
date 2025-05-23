@@ -1,65 +1,111 @@
+#!/usr/bin/env python3
+
 import os
-import shutil
+import argparse
+import xml.etree.ElementTree as ET
+from Bio import SeqIO
 
-def process_file(input_file):
-    data = {}
-    with open(input_file, 'r') as file:
-        next(file)  # Skip the header
-        for line in file:
-            protein_id, interpro_domain, _ = line.strip().split('\t')
-            if protein_id not in data:
-                data[protein_id] = set()
-            data[protein_id].add(interpro_domain)
-    return data
+IPR_NS = "https://ftp.ebi.ac.uk/pub/software/unix/iprscan/5/schemas"
 
-def filter_proteins(data):
-    common_domains = set.intersection(*data.values())
-    filtered_proteins = {}
-    for protein_id, domains in data.items():
-        if domains & common_domains:
-            filtered_proteins[protein_id] = domains
-    return filtered_proteins
+def extract_domains_from_query_xml(query_xml):
+    tree = ET.parse(query_xml)
+    root = tree.getroot()
+    domains = set()
 
-def write_output(filtered_proteins, input_file):
-    output_prefix = os.path.splitext(input_file)[0]
-    filtered_proteins_file = output_prefix + '_filtered_proteins.txt'
-    final_pids_file = output_prefix + '_Final_PIDs.txt'
-    
-    with open(filtered_proteins_file, 'w') as file:
-        file.write('Protein ID\tInterPro Domains\n')
-        for protein_id, domains in filtered_proteins.items():
-            file.write('{}\t{}\n'.format(protein_id, ', '.join(domains)))
-    print(f"Filtered proteins saved to '{filtered_proteins_file}'.")
+    for entry in root.findall(f".//{{{IPR_NS}}}entry"):
+        if entry.attrib.get('ac'):
+            domains.add(entry.attrib['ac'])
 
-    protein_ids = list(filtered_proteins.keys())
-    with open(final_pids_file, 'w') as file:
-        file.write('\n'.join(protein_ids))
-    print(f"Protein IDs saved to '{final_pids_file}'.")
+    print(f"Extracted {len(domains)} InterPro domain(s) from query XML.")
+    return domains
 
-def extract_sequences(filtered_proteins):
-    seqs_directory = 'seqs'
-    domanals_directory = '/PangenePro/DomAnals'
-    for subdir in os.listdir(seqs_directory):
-        if subdir.startswith('seqRefSet_') and os.path.isdir(os.path.join(seqs_directory, subdir)):
-            seq_refset_directory = os.path.join(seqs_directory, subdir)
-            output_sequences_directory = os.path.join(domanals_directory, subdir)
-            os.makedirs(output_sequences_directory, exist_ok=True)
-            
-            for protein_id in filtered_proteins.keys():
-                fasta_file = os.path.join(seq_refset_directory, f"{protein_id}.fa")
-                if os.path.exists(fasta_file):
-                    shutil.copy(fasta_file, output_sequences_directory)
-                    print(f"Sequence file '{protein_id}.fa' copied to '{output_sequences_directory}'.")
+def filter_proteins(domain_file, target_domains):
+    filtered = set()
+
+    with open(domain_file) as f:
+        next(f)  # skip header
+        for line in f:
+            parts = line.strip().split("\t")
+            if len(parts) != 3:
+                continue
+            prot_id, domain, desc = parts
+            if domain in target_domains:
+                filtered.add(prot_id)
+
+    return filtered
+
+def copy_validated_sequences(protein_ids, seq_folder, out_fasta):
+    seq_files = [f for f in os.listdir(seq_folder) if f.endswith(".fa")]
+    written = 0
+
+    with open(out_fasta, "w") as out:
+        for fname in seq_files:
+            fa_path = os.path.join(seq_folder, fname)
+            for record in SeqIO.parse(fa_path, "fasta"):
+                if record.id in protein_ids:
+                    SeqIO.write(record, out, "fasta")
+                    written += 1
+    print(f"Wrote {written} validated protein sequences to {out_fasta}.")
+
+def merge_validated_fastas(validated_dir, output_fasta):
+    os.makedirs(os.path.dirname(output_fasta), exist_ok=True)
+    merged_records = []
+    count = 0
+
+    for fname in os.listdir(validated_dir):
+        if fname.startswith("validated_RefSet_") and fname.endswith(".faa"):
+            refset = fname.replace("validated_", "").replace(".faa", "")
+            fasta_path = os.path.join(validated_dir, fname)
+
+            for record in SeqIO.parse(fasta_path, "fasta"):
+                original_id = record.id
+                record.id = f"{refset}|{original_id}"
+                record.description = ""
+                merged_records.append(record)
+                count += 1
+
+    with open(output_fasta, "w") as out_f:
+        SeqIO.write(merged_records, out_f, "fasta")
+
+    print("\n" + "-"*42)
+    print("MODULE 2 - PANGENES ANALYSIS")
+    print(f"Merged {count} validated proteins into:")
+    print(f"{output_fasta}")
+    print("Ready for DIAMOND all-vs-all ortholog clustering.")
+    print("-"*42 + "\n")
 
 def main():
-    domanals_directory = '/PangenePro/DomAnals'
-    for filename in os.listdir(domanals_directory):
-        if filename.startswith('protein_domains_all') and filename.endswith('.txt'):
-            input_file = os.path.join(domanals_directory, filename)
-            data = process_file(input_file)
-            filtered_proteins = filter_proteins(data)
-            write_output(filtered_proteins, input_file)
-            extract_sequences(filtered_proteins)
+    parser = argparse.ArgumentParser(description="Filter proteins with InterPro domains matching query and prepare for pangene clustering.")
+    parser.add_argument("--query_xml", required=True, help="InterProScan XML result for the query.fa file.")
+    parser.add_argument("--input_dir", required=True, help="Directory containing domains_RefSet_X.tsv files.")
+    parser.add_argument("--seqs_dir", required=True, help="Directory containing seqRefSet_X folders with .fa files.")
+    parser.add_argument("--output_dir", required=True, help="Output directory to store validated .tsv and .faa files.")
+    args = parser.parse_args()
+
+    os.makedirs(args.output_dir, exist_ok=True)
+    target_domains = extract_domains_from_query_xml(args.query_xml)
+
+    domain_files = [f for f in os.listdir(args.input_dir) if f.startswith("domains_RefSet_") and f.endswith(".tsv")]
+
+    for domain_file in domain_files:
+        refset_num = domain_file.split("_")[-1].replace(".tsv", "")
+        domain_path = os.path.join(args.input_dir, domain_file)
+        filtered_ids = filter_proteins(domain_path, target_domains)
+
+        out_tsv = os.path.join(args.output_dir, f"validated_RefSet_{refset_num}.tsv")
+        with open(out_tsv, "w") as out:
+            out.write("Protein ID\n")
+            for pid in sorted(filtered_ids):
+                out.write(f"{pid}\n")
+        print(f"Validated {len(filtered_ids)} proteins in RefSet_{refset_num}")
+
+        seq_folder = os.path.join(args.seqs_dir, f"seqRefSet_{refset_num}")
+        out_faa = os.path.join(args.output_dir, f"validated_RefSet_{refset_num}.faa")
+        copy_validated_sequences(filtered_ids, seq_folder, out_faa)
+
+    # Final step: merge all .faa files into one for clustering
+    merged_fasta = os.path.join("ortholog_clustering", "combined_validated.faa")
+    merge_validated_fastas(args.output_dir, merged_fasta)
 
 if __name__ == "__main__":
     main()
