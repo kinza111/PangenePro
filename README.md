@@ -18,9 +18,11 @@ download the PangenePro using wget or through git and and uncompress the package
 ```
 # download the PangenePro
 $wget https://github.com/kinza111/PangenePro/archive/refs/heads/main.zip
-$unzip main.zip 
+$unzip main.zip
+$cd PangenePro-main
 or
-git clone https://github.com/kinza111/PangenePro.git
+$git clone https://github.com/kinza111/PangenePro.git
+$cd PangenePro
 # Add the bin to PATH
 $ export PATH=/path/to/PangenePro/bin/:$PATH
 ```
