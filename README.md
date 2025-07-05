@@ -17,9 +17,10 @@ PangenePro is a pipeline designed for the quick and efficient identification of 
 download the PangenePro using wget or through git and and uncompress the package. After downloading, put the bin directory into your PATH.
 ```
 # download the PangenePro
-wget https://github.com/kinza111/PangenePro/archive/refs/heads/main.zip
+$wget https://github.com/kinza111/PangenePro/archive/refs/heads/main.zip
+$unzip main.zip 
 or
-git clone git@github.com:kinza111/PangenePro.git
+git clone https://github.com/kinza111/PangenePro.git
 # Add the bin to PATH
 $ export PATH=/path/to/PangenePro/bin/:$PATH
 ```
