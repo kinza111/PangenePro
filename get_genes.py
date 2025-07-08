@@ -89,8 +89,10 @@ def run_blast_and_filter(query_file, ref_data, out_dir, evalue_threshold=1e-5):
         run_command(str(blast_cmd_default))
         print(f" BLAST (default format) complete → {blast_out_default}")
 
-        # Format 6 (tabular)
+        # Format 6 (tabular) with optional max_target_seqs limit for top hits per query
         blast_cmd_fmt6 = NcbiblastpCommandline(query=query_file, subject=proteome, out=blast_out_fmt6, outfmt=6, evalue=evalue_threshold)
+        blast_cmd_fmt6.max_target_seqs = 5  # Uncomment/comment to (not)limit to top 5 hits per query sequence
+
         run_command(str(blast_cmd_fmt6))
         print(f" BLAST (format 6) complete → {blast_out_fmt6}")
 
