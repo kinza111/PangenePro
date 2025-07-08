@@ -26,50 +26,49 @@ def run_command(command):
 
 def build_gff_db(gff_file):
     db_file = tempfile.NamedTemporaryFile(delete=False).name
-    try:
-        db = gffutils.create_db(
-            gff_file,
-            dbfn=db_file,
-            force=True,
-            keep_order=True,
-            merge_strategy='merge',
-            sort_attribute_values=True
-        )
-    except Exception as e:
-        raise RuntimeError(f"Failed to build GFF/GTF DB: {e}")
+    db = gffutils.create_db(
+        gff_file,
+        dbfn=db_file,
+        force=True,
+        keep_order=True,
+        merge_strategy='merge',
+        sort_attribute_values=True
+    )
     return db
 
-def extract_longest_isoforms(db, proteome_fasta, output_fasta):
+def extract_longest_isoforms(db, proteome_fasta, hits, output_fasta):
     protein_lengths = {}
     best_isoforms = {}
-
     records = SeqIO.to_dict(SeqIO.parse(proteome_fasta, "fasta"))
 
-    for cds in db.features_of_type('CDS'):
-        try:
-            parent = cds.attributes.get('Parent') or cds.attributes.get('transcript_id') or ['unknown']
-            protein_id = cds.attributes.get('protein_id', [cds.id])[0]
-            parent_id = parent[0]
-            start = int(cds.start)
-            end = int(cds.end)
-            length = abs(end - start) + 1
+    for hit in hits:
+        cds_list = [f for f in db.features_of_type('CDS') if hit in f.attributes.get('protein_id', []) or hit in f.attributes.get('ID', [])]
+        isoform_lengths = {}
 
-            if protein_id in records:
-                seq_len = len(records[protein_id].seq)
-                if parent_id not in best_isoforms or seq_len > protein_lengths[parent_id]:
-                    best_isoforms[parent_id] = protein_id
-                    protein_lengths[parent_id] = seq_len
-        except Exception as e:
-            print(f"Skipping malformed feature: {e}")
-            continue
+        for cds in cds_list:
+            parent = cds.attributes.get('Parent') or cds.attributes.get('transcript_id') or ['unknown']
+            parent_id = parent[0]
+            length = abs(cds.end - cds.start) + 1
+
+            if parent_id not in isoform_lengths:
+                isoform_lengths[parent_id] = 0
+            isoform_lengths[parent_id] += length
+
+        if isoform_lengths:
+            longest_parent = max(isoform_lengths, key=isoform_lengths.get)
+            for cds in cds_list:
+                parent = cds.attributes.get('Parent') or cds.attributes.get('transcript_id') or ['unknown']
+                if parent[0] == longest_parent:
+                    protein_id = cds.attributes.get('protein_id', [cds.id])[0]
+                    best_isoforms[protein_id] = True
 
     with open(output_fasta, "w") as out_f:
         kept = 0
-        for prot_id in best_isoforms.values():
+        for prot_id in best_isoforms:
             if prot_id in records:
                 SeqIO.write(records[prot_id], out_f, "fasta")
                 kept += 1
-        print(f"Saved {kept} longest isoforms to: {output_fasta}")
+        print(f"Saved {kept} isoform removed non-redundant protein fasta to: {output_fasta}")
 
 def run_blast_and_filter(query_file, ref_data, out_dir, evalue_threshold=1e-5):
     if not os.path.exists(out_dir):
@@ -95,10 +94,6 @@ def run_blast_and_filter(query_file, ref_data, out_dir, evalue_threshold=1e-5):
         run_command(str(blast_cmd_fmt6))
         print(f" BLAST (format 6) complete → {blast_out_fmt6}")
 
-
-        print(f" BLAST complete → {blast_out_fmt6}")
-
-        # Get unique hit accessions
         hits = set()
         with open(blast_out_fmt6) as f:
             for line in f:
@@ -115,7 +110,7 @@ def run_blast_and_filter(query_file, ref_data, out_dir, evalue_threshold=1e-5):
         fmt = detect_annotation_format(annotation)
         db = build_gff_db(annotation)
         final_fasta = os.path.join(ref_out, "Nr_NIs_PSeqs.faa")
-        extract_longest_isoforms(db, proteome, final_fasta)
+        extract_longest_isoforms(db, proteome, hits, final_fasta)
 
 def main():
     if len(sys.argv) < 6:
